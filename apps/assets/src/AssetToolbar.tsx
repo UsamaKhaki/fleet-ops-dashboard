@@ -7,10 +7,9 @@ import {
   type ParsedAssetListQuery,
   type Site,
 } from '@fleet/api';
-import { useDebouncedValue } from '@fleet/app-runtime';
+import { useSearchInput } from '@fleet/app-runtime';
 import { Button, FacetFilter, Input } from '@fleet/ui';
 import { SearchIcon, XIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 import { capitalise } from './format';
 
 const toOptions = <T extends string>(values: readonly T[]) =>
@@ -26,14 +25,7 @@ interface AssetToolbarProps {
 }
 
 export function AssetToolbar({ query, onChange }: AssetToolbarProps) {
-  const [search, setSearch] = useState(query.q ?? '');
-  const debouncedSearch = useDebouncedValue(search, 300);
-
-  useEffect(() => {
-    if (debouncedSearch !== (query.q ?? '')) onChange({ q: debouncedSearch });
-    // Only the debounced input should trigger a change, not the URL catching up.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedSearch]);
+  const [search, setSearch] = useSearchInput(query.q, (q) => onChange({ q }));
 
   const hasFilters = Boolean(
     query.q || query.status?.length || query.type?.length || query.site?.length,
