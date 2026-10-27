@@ -7,3 +7,14 @@ coverage/
 .env.*
 !.env.example
 apps/root-config/public/shared/
+
+# Local editor and assistant tooling
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+.cursor/
+.cursorrules
+.windsurfrules
+.github/copilot-instructions.md
+.aider*
