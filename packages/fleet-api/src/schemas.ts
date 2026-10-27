@@ -141,6 +141,8 @@ export type WorkOrderSortField = (typeof WORK_ORDER_SORT_FIELDS)[number];
 export const workOrderListQuerySchema = z.object({
   ...paginationShape,
   sort: z.enum(WORK_ORDER_SORT_FIELDS).default('createdAt'),
+  // Newest first, which is also where an optimistically created work order is shown.
+  order: z.enum(['asc', 'desc']).default('desc'),
   status: csvOf(WORK_ORDER_STATUSES).optional(),
   priority: csvOf(WORK_ORDER_PRIORITIES).optional(),
 });
