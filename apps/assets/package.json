@@ -1,0 +1,27 @@
+{
+  "name": "@fleet/assets",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite build --mode development && concurrently -k -n build,serve \"vite build --watch --mode development\" \"vite preview\"",
+    "build": "vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fleet/api": "workspace:^",
+    "@fleet/app-runtime": "workspace:^",
+    "@fleet/ui": "workspace:^",
+    "@tanstack/react-query": "^5.81.0",
+    "@tanstack/react-table": "^8.21.3",
+    "@tanstack/react-virtual": "^3.13.12",
+    "lucide-react": "^0.525.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sonner": "^2.0.5"
+  }
+}
