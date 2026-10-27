@@ -5,10 +5,13 @@ import { MICRO_FRONTENDS, SHARED_DEPENDENCIES, microFrontendFileName } from './m
 type MicroFrontendDir = (typeof MICRO_FRONTENDS)[number]['dir'];
 
 /**
- * Builds one micro-frontend as a single ES module with single-spa lifecycles. In dev the
- * module is rebuilt on change (`vite build --watch`) and served by `vite preview`, because
- * the root config loads it cross-origin through the import map rather than through Vite's
- * dev server.
+ * Builds one micro-frontend as an ES module that exports its single-spa lifecycles. In dev
+ * the module is rebuilt on change (`vite build --watch`) and served by `vite preview`,
+ * because the root config loads it cross-origin through the import map rather than through
+ * Vite's dev server.
+ *
+ * This is an app build with a JS entry rather than library mode: library mode skips
+ * whitespace minification for ES output, which roughly doubled the bundles.
  */
 export function defineMicroFrontendConfig(dir: MicroFrontendDir) {
   const app = MICRO_FRONTENDS.find((entry) => entry.dir === dir);
@@ -16,6 +19,8 @@ export function defineMicroFrontendConfig(dir: MicroFrontendDir) {
 
   return defineConfig(({ mode }): UserConfig => ({
     plugins: [react()],
+    // Relative, so any chunk is fetched from the app's own origin, not the root's.
+    base: './',
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode === 'development' ? 'development' : 'production'),
     },
@@ -24,12 +29,15 @@ export function defineMicroFrontendConfig(dir: MicroFrontendDir) {
       sourcemap: true,
       minify: mode !== 'development',
       emptyOutDir: true,
-      lib: {
-        entry: 'src/main.tsx',
-        formats: ['es'],
-        fileName: () => microFrontendFileName(dir),
-      },
       rollupOptions: {
+        input: 'src/main.tsx',
+        // Keep the lifecycle exports; an app build drops entry exports by default.
+        preserveEntrySignatures: 'exports-only',
+        output: {
+          format: 'es',
+          entryFileNames: microFrontendFileName(dir),
+          chunkFileNames: 'chunks/[name]-[hash].js',
+        },
         external: Object.keys(SHARED_DEPENDENCIES),
         onwarn(warning, warn) {
           // zod ships pure annotations Rollup cannot place; harmless and not ours to fix.

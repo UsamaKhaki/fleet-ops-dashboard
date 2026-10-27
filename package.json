@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel --stream --no-bail dev",
     "build": "pnpm -r --filter \"./apps/*\" --filter \"!@fleet/root-config\" build && pnpm --filter @fleet/root-config build",
-    "preview": "pnpm --filter @fleet/root-config preview",
+    "preview": "concurrently -k -n server,web \"pnpm --filter @fleet/mock-server start\" \"pnpm --filter @fleet/root-config preview\"",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc -p tooling && pnpm -r typecheck",
