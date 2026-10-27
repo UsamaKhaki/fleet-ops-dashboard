@@ -4,7 +4,7 @@
  * One stylesheet for the whole page. The root config builds it, and Tailwind scans every
  * micro-frontend, so apps ship no CSS of their own and cannot override each other's preflight.
  */
-@source '../../../apps/*/src';
+@source '../../../apps'; /* gitignored dist folders are skipped */
 @source './';
 
 @custom-variant dark (&:is(.dark *));
