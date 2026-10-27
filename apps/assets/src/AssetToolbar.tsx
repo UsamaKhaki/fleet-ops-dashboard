@@ -32,7 +32,6 @@ export function AssetToolbar({ query, onChange }: AssetToolbarProps) {
   );
 
   const clearFilters = () => {
-    setSearch('');
     onChange({ q: '', status: [], type: [], site: [] });
   };
 

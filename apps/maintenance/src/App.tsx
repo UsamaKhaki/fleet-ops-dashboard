@@ -78,7 +78,6 @@ export function App() {
 
   const hasFilters = Boolean(query.q || query.status?.length || query.priority?.length);
   const clearFilters = () => {
-    setSearch('');
     setQuery({ q: '', status: [], priority: [] });
   };
 
