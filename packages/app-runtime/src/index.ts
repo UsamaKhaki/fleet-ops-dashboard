@@ -4,3 +4,4 @@ export { useLiveFeed } from './use-live-feed';
 export { useSearchParams } from './use-search-params';
 export { parseSearchParams } from './parse-search-params';
 export { useDebouncedValue } from './use-debounced-value';
+export { applyListChange, useListParams } from './use-list-params';
