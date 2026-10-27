@@ -194,14 +194,15 @@ No environment variables are required. These are optional:
 | `MOCK_SERVER_PORT`   | mock server                        | `6709`                  |
 | `MOCK_LATENCY_MS`    | mock server, maximum added latency | `600`                   |
 
-| Command          | What it does                                                                                        |
-| ---------------- | --------------------------------------------------------------------------------------------------- |
-| `pnpm dev`       | Mock server plus all apps in watch mode                                                             |
-| `pnpm build`     | Builds every micro-frontend, then the root config, and copies the apps into `apps/root-config/dist` |
-| `pnpm preview`   | Serves that build on 6701 with the mock server on 6709                                              |
-| `pnpm lint`      | ESLint and a Prettier check                                                                         |
-| `pnpm typecheck` | `tsc --noEmit` in every package                                                                     |
-| `pnpm test`      | Vitest across all packages                                                                          |
+| Command             | What it does                                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------------- |
+| `pnpm dev`          | Mock server plus all apps in watch mode                                                             |
+| `pnpm build`        | Builds every micro-frontend, then the root config, and copies the apps into `apps/root-config/dist` |
+| `pnpm preview`      | Serves that build on 6701 with the mock server on 6709                                              |
+| `pnpm build:vercel` | The hosted demo build: the static site plus the bundled mock server in `.vercel/output`             |
+| `pnpm lint`         | ESLint and a Prettier check                                                                         |
+| `pnpm typecheck`    | `tsc --noEmit` in every package                                                                     |
+| `pnpm test`         | Vitest across all packages                                                                          |
 
 ## Project structure
 
@@ -287,14 +288,17 @@ and on pull requests.
 
 ## Deployment
 
-The demo runs on Vercel from one project, configured in `vercel.json`:
+The demo runs on Vercel. `pnpm build:vercel` (the build command in `vercel.json`) writes
+[Vercel's Build Output API](https://vercel.com/docs/build-output-api) format to
+`.vercel/output`, using [`scripts/build-vercel-output.ts`](scripts/build-vercel-output.ts):
 
-- **Static site.** `pnpm build` produces `apps/root-config/dist`: the root page, every
-  micro-frontend under `/apps/<name>/` and the shared React modules under `/shared/`. Unknown
-  paths fall back to `index.html`, so `/assets`, `/maintenance` and `/live-map` work on refresh.
-- **Mock server as a function.** [`api/server.ts`](api/server.ts) exports the same Node HTTP
-  server the local mock uses, with the `ws` live feed attached. Every `/api/*` request,
-  including the `/api/ws` WebSocket upgrade, is rewritten to it.
+- **Static site.** The normal `pnpm build` output: the root page, every micro-frontend under
+  `/apps/<name>/` and the shared React modules under `/shared/`. Unknown paths fall back to
+  `index.html`, so `/assets`, `/maintenance` and `/live-map` work on refresh.
+- **Mock server as one function.** [`server/src/hosted.ts`](server/src/hosted.ts) exports the
+  same Node HTTP server the local mock uses, with the `ws` live feed attached. esbuild bundles
+  it with its dependencies into a single ES module, so nothing is resolved or compiled at
+  runtime. Every `/api/*` request, including the `/api/ws` WebSocket upgrade, goes to it.
 - **Same origin.** The build sets `VITE_FLEET_API_URL` to an empty string, so the apps call
   `/api/*` on the page's own host and open the live feed at `/api/ws`.
 

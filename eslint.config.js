@@ -4,7 +4,7 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', 'apps/root-config/public/shared/**'] },
+  { ignores: ['**/dist/**', '**/coverage/**', '.vercel/**', 'apps/root-config/public/shared/**'] },
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
   {
