@@ -63,7 +63,7 @@ export function App() {
             Assets
           </h1>
           <p className="text-sm text-muted-foreground">
-            {assets.data
+            {assets.data && !assets.isError
               ? `${integerFormat.format(assets.data.total)} machines match the current filters`
               : 'Every machine in the fleet'}
           </p>
