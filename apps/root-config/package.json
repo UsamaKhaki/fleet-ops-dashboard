@@ -1,0 +1,23 @@
+{
+  "name": "@fleet/root-config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx scripts/build-shared-deps.ts development && vite",
+    "build": "tsx scripts/build-shared-deps.ts production && vite build && tsx scripts/assemble.ts",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fleet/ui": "workspace:^",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "single-spa": "^6.0.3",
+    "sonner": "^2.0.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "tsx": "^4.20.0"
+  }
+}
