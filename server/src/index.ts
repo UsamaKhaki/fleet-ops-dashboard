@@ -1,6 +1,7 @@
 import { createMockServer } from './app';
 
-const port = Number(process.env.PORT ?? 6709);
+// Not PORT: dev tooling often sets PORT for the page server, which must stay on 6701.
+const port = Number(process.env.MOCK_SERVER_PORT ?? 6709);
 const latencyMax = Number(process.env.MOCK_LATENCY_MS ?? 600);
 
 const mock = createMockServer({ latencyMs: [Math.min(150, latencyMax), latencyMax] });
