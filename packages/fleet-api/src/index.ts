@@ -5,6 +5,7 @@ export { assetKeys, workOrderKeys } from './query-keys';
 export { connectLive, reconnectDelay, type LiveConnectionOptions, type LiveStatus } from './live';
 export {
   FAILURE_MODES,
+  FAILURE_MODE_EVENT,
   SIMULATED_FAILURE_HEADER,
   getFailureMode,
   setFailureMode,
