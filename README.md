@@ -287,10 +287,22 @@ and on pull requests.
 
 ## Deployment
 
-The project is not deployed anywhere. `pnpm build` produces a static site in
-`apps/root-config/dist` that any static host can serve, as long as unknown paths fall back to
-`index.html`. The mock server is a separate Node process; a real deployment would replace it
-with an actual API and set `VITE_FLEET_API_URL` at build time.
+The demo runs on Vercel from one project, configured in `vercel.json`:
+
+- **Static site.** `pnpm build` produces `apps/root-config/dist`: the root page, every
+  micro-frontend under `/apps/<name>/` and the shared React modules under `/shared/`. Unknown
+  paths fall back to `index.html`, so `/assets`, `/maintenance` and `/live-map` work on refresh.
+- **Mock server as a function.** [`api/server.ts`](api/server.ts) exports the same Node HTTP
+  server the local mock uses, with the `ws` live feed attached. Every `/api/*` request,
+  including the `/api/ws` WebSocket upgrade, is rewritten to it.
+- **Same origin.** The build sets `VITE_FLEET_API_URL` to an empty string, so the apps call
+  `/api/*` on the page's own host and open the live feed at `/api/ws`.
+
+Hosting limits that matter for the demo: data lives in memory per function instance, so it
+resets when an instance is recycled and two instances can briefly disagree; a WebSocket closes
+when the function reaches its maximum duration, and the client reconnects with backoff.
+
+A real deployment would replace the mock with an actual API and set `VITE_FLEET_API_URL` to it.
 
 ## Limitations
 
