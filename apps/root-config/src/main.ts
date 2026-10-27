@@ -8,6 +8,7 @@ import {
   getAppStatus,
   registerApplication,
   start,
+  triggerAppChange,
   type LifeCycles,
 } from 'single-spa';
 import { MICRO_FRONTENDS, ROUTES } from '../../../tooling/micro-frontends';
@@ -44,7 +45,9 @@ function describeRoute(): string | null {
   const status = getAppStatus(name);
   if (status === LOAD_ERROR || status === SKIP_BECAUSE_BROKEN) {
     const app = MICRO_FRONTENDS.find((entry) => entry.name === name);
-    return `The ${app?.dir ?? name} module failed to load. In dev, check that its server is running${app ? ` on port ${app.port}` : ''}, then reload.`;
+    const where = app ? ` on port ${app.port}` : '';
+    if (devRetry.pending) return `Waiting for the ${app?.dir ?? name} dev server${where}…`;
+    return `The ${app?.dir ?? name} module failed to load. In dev, check that its server is running${where}, then reload.`;
   }
   return status === MOUNTED ? null : 'Loading…';
 }
@@ -56,8 +59,24 @@ function renderRouteStatus() {
   routeStatus.textContent = message;
 }
 
+// In dev the micro-frontends build for a few seconds after the page server is up, so a
+// first load often races them. single-spa retries a LOAD_ERROR app on the next reroute.
+const DEV_RETRY_LIMIT = 15;
+const devRetry = { attempts: 0, pending: false };
+
+function retryFailedLoadsInDev() {
+  if (!import.meta.env.DEV || devRetry.pending || devRetry.attempts >= DEV_RETRY_LIMIT) return;
+  devRetry.pending = true;
+  devRetry.attempts += 1;
+  setTimeout(() => {
+    devRetry.pending = false;
+    void triggerAppChange();
+  }, 2000);
+}
+
 addErrorHandler((error) => {
-  console.error(`[root-config] ${error.appOrParcelName} failed`, error);
+  if (getAppStatus(error.appOrParcelName) === LOAD_ERROR) retryFailedLoadsInDev();
+  else console.error(`[root-config] ${error.appOrParcelName} failed`, error);
   renderRouteStatus();
 });
 window.addEventListener('single-spa:before-routing-event', renderRouteStatus);

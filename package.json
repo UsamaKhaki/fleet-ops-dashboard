@@ -7,7 +7,7 @@
   },
   "type": "module",
   "scripts": {
-    "dev": "pnpm -r --parallel --stream dev",
+    "dev": "pnpm -r --parallel --stream --no-bail dev",
     "build": "pnpm -r --filter \"./apps/*\" --filter \"!@fleet/root-config\" build && pnpm --filter @fleet/root-config build",
     "preview": "pnpm --filter @fleet/root-config preview",
     "lint": "eslint . && prettier --check .",
