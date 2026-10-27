@@ -45,6 +45,16 @@ importers:
         specifier: ^3.2.4
         version: 3.2.7(@types/node@22.20.5)
 
+  packages/fleet-api:
+    dependencies:
+      zod:
+        specifier: ^4.1.0
+        version: 4.6.7
+    devDependencies:
+      vite:
+        specifier: ~6.3.5
+        version: 6.3.7(@types/node@22.20.5)
+
 packages:
 
   '@esbuild/aix-ppc64@0.25.12':
@@ -1109,6 +1119,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
+
 snapshots:
 
   '@esbuild/aix-ppc64@0.25.12':
@@ -2074,3 +2087,5 @@ snapshots:
       yargs-parser: 21.1.1
 
   yocto-queue@0.1.0: {}
+
+  zod@4.6.7: {}
