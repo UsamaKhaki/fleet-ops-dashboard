@@ -1,4 +1,4 @@
-import { createMockServer } from './app';
+import { createMockServer } from './app.js';
 
 // Not PORT: dev tooling often sets PORT for the page server, which must stay on 6701.
 const port = Number(process.env.MOCK_SERVER_PORT ?? 6709);

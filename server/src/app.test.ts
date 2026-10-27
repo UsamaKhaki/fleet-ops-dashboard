@@ -1,8 +1,8 @@
 import type { LiveMessage } from '@fleet/api/schemas';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { WebSocket } from 'ws';
-import { createMockServer } from './app';
-import { FleetStore } from './store';
+import { createMockServer } from './app.js';
+import { FleetStore } from './store.js';
 
 let mock: ReturnType<typeof createMockServer>;
 let baseUrl: string;

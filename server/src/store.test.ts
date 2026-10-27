@@ -1,6 +1,6 @@
 import { assetListQuerySchema, workOrderListQuerySchema } from '@fleet/api/schemas';
 import { describe, expect, it } from 'vitest';
-import { FleetStore } from './store';
+import { FleetStore } from './store.js';
 
 const NOW = new Date('2026-10-01T08:00:00.000Z');
 const assetQuery = (input: Record<string, string> = {}) => assetListQuerySchema.parse(input);

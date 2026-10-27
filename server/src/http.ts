@@ -9,7 +9,7 @@ import {
   type LiveMessage,
 } from '@fleet/api/schemas';
 import type { z } from 'zod';
-import type { FleetStore } from './store';
+import type { FleetStore } from './store.js';
 
 const SIMULATED_FAILURE_HEADER = 'x-simulate-failure';
 const MAX_BODY_BYTES = 64 * 1024;

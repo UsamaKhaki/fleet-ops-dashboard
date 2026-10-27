@@ -2,8 +2,8 @@ import { createServer } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import type { LiveMessage } from '@fleet/api/schemas';
 import { WebSocket, WebSocketServer } from 'ws';
-import { createRequestHandler } from './http';
-import { FleetStore } from './store';
+import { createRequestHandler } from './http.js';
+import { FleetStore } from './store.js';
 
 const LIVE_PATHS = new Set(['/ws', '/api/ws']);
 

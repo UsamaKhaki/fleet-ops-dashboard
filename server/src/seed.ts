@@ -8,7 +8,7 @@ import {
   type VehiclePosition,
   type WorkOrder,
 } from '@fleet/api/schemas';
-import type { Random } from './random';
+import type { Random } from './random.js';
 
 const CATALOGUE: Record<AssetType, { make: string; model: string }[]> = {
   truck: [

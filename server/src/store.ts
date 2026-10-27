@@ -13,9 +13,9 @@ import {
   type WorkOrderCreate,
   type WorkOrderPatch,
 } from '@fleet/api/schemas';
-import { matchesSearch, paginate, sortBy } from './list-query';
-import { createRandom, type Random } from './random';
-import { generateAssets, generateVehicles, generateWorkOrders } from './seed';
+import { matchesSearch, paginate, sortBy } from './list-query.js';
+import { createRandom, type Random } from './random.js';
+import { generateAssets, generateVehicles, generateWorkOrders } from './seed.js';
 
 export interface FleetStoreOptions {
   seed?: number;

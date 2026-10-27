@@ -1,4 +1,4 @@
-import { createMockServer } from '../server/src/app';
+import { createMockServer } from '../server/src/app.js';
 
 /**
  * The mock REST API and live feed as one Vercel Function. vercel.json rewrites every /api/*
