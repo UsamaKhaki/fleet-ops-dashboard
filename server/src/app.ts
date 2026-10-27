@@ -5,6 +5,8 @@ import { WebSocket, WebSocketServer } from 'ws';
 import { createRequestHandler } from './http';
 import { FleetStore } from './store';
 
+const LIVE_PATHS = new Set(['/ws', '/api/ws']);
+
 export interface MockServerOptions {
   store?: FleetStore;
   latencyMs?: readonly [number, number];
@@ -34,7 +36,8 @@ export function createMockServer({
   });
 
   server.on('upgrade', (request, socket, head) => {
-    if (new URL(request.url ?? '/', 'http://localhost').pathname !== '/ws') {
+    // /ws locally; /api/ws when hosted, where every server route sits under /api.
+    if (!LIVE_PATHS.has(new URL(request.url ?? '/', 'http://localhost').pathname)) {
       socket.destroy();
       return;
     }
@@ -49,28 +52,37 @@ export function createMockServer({
 
   const timers: ReturnType<typeof setInterval>[] = [];
 
+  /** Starts the telemetry and asset-churn timers. Calling it again does nothing. */
+  const startSimulation = () => {
+    if (timers.length > 0) return;
+    if (telemetryIntervalMs > 0) {
+      timers.push(
+        setInterval(() => {
+          broadcast({
+            type: 'telemetry.update',
+            vehicles: store.advanceTelemetry(telemetryIntervalMs),
+          });
+        }, telemetryIntervalMs),
+      );
+    }
+    if (assetChurnIntervalMs > 0) {
+      timers.push(
+        setInterval(() => {
+          broadcast({ type: 'asset.updated', asset: store.changeRandomAssetStatus() });
+        }, assetChurnIntervalMs),
+      );
+    }
+  };
+
   return {
     store,
     broadcast,
+    /** The HTTP server, for hosts that start it themselves (see api/server.ts). */
+    server,
+    startSimulation,
     async listen(port: number): Promise<number> {
       await new Promise<void>((resolve) => server.listen(port, resolve));
-      if (telemetryIntervalMs > 0) {
-        timers.push(
-          setInterval(() => {
-            broadcast({
-              type: 'telemetry.update',
-              vehicles: store.advanceTelemetry(telemetryIntervalMs),
-            });
-          }, telemetryIntervalMs),
-        );
-      }
-      if (assetChurnIntervalMs > 0) {
-        timers.push(
-          setInterval(() => {
-            broadcast({ type: 'asset.updated', asset: store.changeRandomAssetStatus() });
-          }, assetChurnIntervalMs),
-        );
-      }
+      startSimulation();
       return (server.address() as AddressInfo).port;
     },
     async close(): Promise<void> {

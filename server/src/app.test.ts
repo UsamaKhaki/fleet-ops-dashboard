@@ -125,4 +125,17 @@ describe('live feed', () => {
 
     socket.close();
   });
+
+  it('also accepts the /api/ws path the hosted demo uses', async () => {
+    const socket = new WebSocket(`${baseUrl.replace('http', 'ws')}/api/ws`);
+    const snapshot = await nextMessage(socket);
+    expect(snapshot.type).toBe('telemetry.snapshot');
+    socket.close();
+  });
+
+  it('refuses upgrades on any other path', async () => {
+    const socket = new WebSocket(`${baseUrl.replace('http', 'ws')}/api/other`);
+    await new Promise<void>((resolve) => socket.once('error', () => resolve()));
+    expect(socket.readyState).not.toBe(WebSocket.OPEN);
+  });
 });
