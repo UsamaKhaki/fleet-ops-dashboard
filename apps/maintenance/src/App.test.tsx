@@ -68,7 +68,13 @@ describe('maintenance app', () => {
 
     expect(screen.getByLabelText('Asset ID')).toHaveAttribute('aria-invalid', 'true');
     expect(screen.getByLabelText('Title')).toHaveAttribute('aria-invalid', 'true');
+    expect(screen.getByText('Use at least 3 characters')).toBeInTheDocument();
     expect(fetchMock.mock.calls.length).toBe(requestsBefore);
+
+    await userEvent.type(screen.getByLabelText('Asset ID'), 'AST-00042');
+    expect(screen.getByLabelText('Asset ID')).toHaveAttribute('aria-invalid', 'false');
+    expect(screen.queryByText(/enter an asset id/i)).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Title')).toHaveAttribute('aria-invalid', 'true');
   });
 
   it('shows a retryable error', async () => {

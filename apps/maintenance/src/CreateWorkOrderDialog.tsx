@@ -49,8 +49,11 @@ export function CreateWorkOrderDialog({
   const [form, setForm] = useState(emptyForm);
   const [errors, setErrors] = useState<FieldErrors>({});
 
-  const update = <K extends keyof WorkOrderCreate>(key: K, value: WorkOrderCreate[K]) =>
+  const update = <K extends keyof WorkOrderCreate>(key: K, value: WorkOrderCreate[K]) => {
     setForm((current) => ({ ...current, [key]: value }));
+    // A field's error goes as soon as it is edited; the rest stay until the next submit.
+    setErrors((current) => ({ ...current, [key]: undefined }));
+  };
 
   const submit = (event: FormEvent) => {
     event.preventDefault();

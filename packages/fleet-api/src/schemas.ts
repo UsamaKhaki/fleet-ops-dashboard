@@ -82,10 +82,14 @@ export type WorkOrderPriority = z.infer<typeof workOrderPrioritySchema>;
 export type WorkOrderStatus = z.infer<typeof workOrderStatusSchema>;
 
 export const workOrderCreateSchema = z.object({
-  assetId: z.string().min(1),
-  title: z.string().trim().min(3).max(120),
+  assetId: z.string().min(1, 'Enter an asset ID, for example AST-00042'),
+  title: z
+    .string()
+    .trim()
+    .min(3, 'Use at least 3 characters')
+    .max(120, 'Keep the title under 120 characters'),
   priority: workOrderPrioritySchema,
-  dueDate: z.iso.date(),
+  dueDate: z.iso.date({ error: 'Pick a due date' }),
 });
 export type WorkOrderCreate = z.infer<typeof workOrderCreateSchema>;
 
