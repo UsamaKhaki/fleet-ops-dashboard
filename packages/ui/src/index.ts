@@ -21,7 +21,10 @@ export {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './components/dropdown-menu';
+export { FacetFilter } from './components/facet-filter';
 export { Input } from './components/input';
+export { LiveIndicator } from './components/live-indicator';
+export { PaginationBar } from './components/pagination-bar';
 export { Label } from './components/label';
 export { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './components/select';
 export { Skeleton } from './components/skeleton';
