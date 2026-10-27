@@ -1,0 +1,30 @@
+{
+  "name": "@fleet/app-runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "dependencies": {
+    "@fleet/api": "workspace:^",
+    "@fleet/ui": "workspace:^",
+    "@tanstack/react-query": "^5.81.0",
+    "single-spa-react": "^6.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "single-spa": "^6.0.3",
+    "vite": "~6.3.5"
+  }
+}
