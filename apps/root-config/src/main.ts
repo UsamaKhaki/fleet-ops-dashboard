@@ -13,9 +13,22 @@ import {
 } from 'single-spa';
 import { MICRO_FRONTENDS, ROUTES } from '../../../tooling/micro-frontends';
 
-// A variable specifier keeps Vite from resolving it; the browser resolves it through the import map.
-function loadMicroFrontend(specifier: string): Promise<LifeCycles> {
-  return import(/* @vite-ignore */ specifier) as Promise<LifeCycles>;
+const failedLoads = new Map<string, number>();
+
+/**
+ * Loads a micro-frontend through the import map. Browsers remember a failed dynamic import
+ * for the life of the page, so a retry asks for the resolved URL with an attempt counter.
+ */
+async function loadMicroFrontend(specifier: string): Promise<LifeCycles> {
+  const attempt = failedLoads.get(specifier) ?? 0;
+  const target = attempt === 0 ? specifier : `${import.meta.resolve(specifier)}?attempt=${attempt}`;
+  try {
+    // A variable specifier keeps Vite from resolving it at build time.
+    return (await import(/* @vite-ignore */ target)) as LifeCycles;
+  } catch (error) {
+    failedLoads.set(specifier, attempt + 1);
+    throw error;
+  }
 }
 
 registerApplication({
