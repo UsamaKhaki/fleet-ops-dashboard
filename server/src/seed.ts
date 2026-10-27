@@ -1,10 +1,10 @@
 import {
   ASSET_STATUSES,
+  SITE_LOCATIONS,
   SITES,
   WORK_ORDER_PRIORITIES,
   type Asset,
   type AssetType,
-  type Site,
   type VehiclePosition,
   type WorkOrder,
 } from '@fleet/api/schemas';
@@ -41,17 +41,6 @@ const CATALOGUE: Record<AssetType, { make: string; model: string }[]> = {
 
 const ASSET_TYPES = Object.keys(CATALOGUE) as AssetType[];
 const MOBILE_TYPES: ReadonlySet<AssetType> = new Set(['truck', 'loader', 'forklift', 'crane']);
-
-// Fictional operating area; the live map projects this box onto its canvas.
-export const MAP_BOUNDS = { minLat: 51.4, maxLat: 51.6, minLng: -0.3, maxLng: 0.1 } as const;
-
-export const SITE_LOCATIONS: Record<Site, { lat: number; lng: number }> = {
-  'North Yard': { lat: 51.57, lng: -0.18 },
-  'Harbour Depot': { lat: 51.43, lng: 0.05 },
-  'Ridge Quarry': { lat: 51.45, lng: -0.26 },
-  'Eastgate Site': { lat: 51.53, lng: 0.02 },
-  'Central Hub': { lat: 51.5, lng: -0.1 },
-};
 
 const WORK_ORDER_TITLES = [
   'Replace hydraulic hose',

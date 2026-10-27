@@ -17,6 +17,18 @@ export const SITES = [
   'Central Hub',
 ] as const;
 
+// Fictional operating area. The mock server keeps vehicles inside it and the live map
+// projects it onto its canvas.
+export const MAP_BOUNDS = { minLat: 51.4, maxLat: 51.6, minLng: -0.3, maxLng: 0.1 } as const;
+
+export const SITE_LOCATIONS: Record<(typeof SITES)[number], { lat: number; lng: number }> = {
+  'North Yard': { lat: 51.57, lng: -0.18 },
+  'Harbour Depot': { lat: 51.43, lng: 0.05 },
+  'Ridge Quarry': { lat: 51.45, lng: -0.26 },
+  'Eastgate Site': { lat: 51.53, lng: 0.02 },
+  'Central Hub': { lat: 51.5, lng: -0.1 },
+};
+
 export const WORK_ORDER_PRIORITIES = ['low', 'medium', 'high', 'critical'] as const;
 export const WORK_ORDER_STATUSES = ['open', 'in_progress', 'completed'] as const;
 

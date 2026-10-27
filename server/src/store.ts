@@ -1,5 +1,6 @@
 import {
   ASSET_STATUSES,
+  MAP_BOUNDS,
   WORK_ORDER_PRIORITIES,
   type Asset,
   type AssetPatch,
@@ -14,7 +15,7 @@ import {
 } from '@fleet/api/schemas';
 import { matchesSearch, paginate, sortBy } from './list-query';
 import { createRandom, type Random } from './random';
-import { MAP_BOUNDS, generateAssets, generateVehicles, generateWorkOrders } from './seed';
+import { generateAssets, generateVehicles, generateWorkOrders } from './seed';
 
 export interface FleetStoreOptions {
   seed?: number;
@@ -153,7 +154,7 @@ export class FleetStore {
       const speedKph = this.random.int(minSpeed, maxSpeed);
       let heading = (vehicle.heading + this.random.int(-25, 25) + 360) % 360;
       // Scaled up so movement is visible on a city-sized map at one tick per second.
-      const distanceDeg = (speedKph / 3600) * (elapsedMs / 1000) * 0.02;
+      const distanceDeg = (speedKph / 3600) * (elapsedMs / 1000) * 0.08;
       const radians = (heading * Math.PI) / 180;
       let lat = vehicle.lat + Math.cos(radians) * distanceDeg;
       let lng = vehicle.lng + Math.sin(radians) * distanceDeg * 1.6;
