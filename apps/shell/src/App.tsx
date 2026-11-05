@@ -17,6 +17,7 @@ import {
 } from '@fleet/ui';
 import { FlaskConicalIcon, MonitorIcon, MoonIcon, SunIcon, TruckIcon } from 'lucide-react';
 import { useState, type MouseEvent } from 'react';
+import { routeUrl } from '../../../tooling/base-path';
 import { ROUTES } from '../../../tooling/micro-frontends';
 import { useTheme, type ThemePreference } from './theme';
 import { usePathname } from './use-pathname';
@@ -60,7 +61,7 @@ export function App() {
       <header className="sticky top-0 z-40 border-b bg-background/85 backdrop-blur">
         <div className="mx-auto flex w-full max-w-7xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
           <a
-            href="/assets"
+            href={routeUrl('/assets')}
             onClick={navigate}
             className="flex items-center gap-2 whitespace-nowrap font-semibold"
           >
@@ -72,11 +73,11 @@ export function App() {
 
           <nav aria-label="Main" className="order-last flex w-full gap-1 sm:order-none sm:w-auto">
             {ROUTES.map((route) => {
-              const isActive = pathname.startsWith(route.path);
+              const isActive = pathname.startsWith(routeUrl(route.path));
               return (
                 <a
                   key={route.path}
-                  href={route.path}
+                  href={routeUrl(route.path)}
                   onClick={navigate}
                   aria-current={isActive ? 'page' : undefined}
                   className={cn(

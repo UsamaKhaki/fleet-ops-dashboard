@@ -15,6 +15,7 @@
     "typecheck": "tsc -p tooling && tsc -p tsconfig.json && pnpm -r typecheck",
     "test": "vitest run",
     "test:watch": "vitest",
+    "build:pages": "VITE_FLEET_API_URL= VITE_FLEET_BROWSER_MOCK=true VITE_FLEET_BASE_PATH=/fleet-ops-dashboard pnpm build",
     "build:vercel": "VITE_FLEET_API_URL= pnpm build && tsx scripts/build-vercel-output.ts"
   },
   "devDependencies": {

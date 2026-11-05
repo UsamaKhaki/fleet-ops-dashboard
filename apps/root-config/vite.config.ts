@@ -11,6 +11,8 @@ import {
  * Writes the import map into index.html. In dev every micro-frontend is loaded from its
  * own port; in a production build they sit next to the root under /apps/<dir>/.
  */
+const base = `${process.env.VITE_FLEET_BASE_PATH ?? ''}/`;
+
 function importMap(): Plugin {
   let isDevServer = false;
   return {
@@ -23,13 +25,13 @@ function importMap(): Plugin {
       handler() {
         const imports: Record<string, string> = {};
         for (const [specifier, file] of Object.entries(SHARED_DEPENDENCIES)) {
-          imports[specifier] = `/shared/${file}`;
+          imports[specifier] = `${base}shared/${file}`;
         }
         for (const app of MICRO_FRONTENDS) {
           const file = microFrontendFileName(app.dir);
           imports[app.name] = isDevServer
             ? `http://localhost:${app.port}/${file}`
-            : `/apps/${app.dir}/${file}`;
+            : `${base}apps/${app.dir}/${file}`;
         }
         return [
           {
@@ -45,6 +47,7 @@ function importMap(): Plugin {
 }
 
 export default defineConfig({
+  base,
   plugins: [importMap(), tailwindcss()],
   server: { port: ROOT_CONFIG_PORT, strictPort: true },
   preview: { port: ROOT_CONFIG_PORT, strictPort: true },

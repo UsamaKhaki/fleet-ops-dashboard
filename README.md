@@ -9,9 +9,9 @@ against a seeded mock API and WebSocket feed, so it works offline with no accoun
 
 ![Assets table in dark mode with 5,000 machines, sortable columns and server-side paging](docs/screenshots/assets-table.jpg)
 
-**Demo:** [45 second captioned walkthrough](docs/demo/fleet-ops-walkthrough.mp4) (MP4, made
-from screenshots of the running app) · [how to run it locally](#getting-started). There is no
-hosted version.
+**Live demo:** <https://usamakhaki.github.io/fleet-ops-dashboard/> · [45 second captioned
+walkthrough](docs/demo/fleet-ops-walkthrough.mp4) (MP4, made from screenshots of the running
+app) · [how to run it locally](#getting-started).
 
 ## Why it exists
 
@@ -199,7 +199,8 @@ No environment variables are required. These are optional:
 | `pnpm dev`          | Mock server plus all apps in watch mode                                                             |
 | `pnpm build`        | Builds every micro-frontend, then the root config, and copies the apps into `apps/root-config/dist` |
 | `pnpm preview`      | Serves that build on 6701 with the mock server on 6709                                              |
-| `pnpm build:vercel` | The hosted demo build: the static site plus the bundled mock server in `.vercel/output`             |
+| `pnpm build:pages`  | The hosted demo build: the static site with the mock server running in the browser                  |
+| `pnpm build:vercel` | A Vercel build: the static site plus the bundled mock server in `.vercel/output`                    |
 | `pnpm lint`         | ESLint and a Prettier check                                                                         |
 | `pnpm typecheck`    | `tsc --noEmit` in every package                                                                     |
 | `pnpm test`         | Vitest across all packages                                                                          |
@@ -288,29 +289,27 @@ and on pull requests.
 
 ## Deployment
 
-The demo runs on Vercel. `pnpm build:vercel` (the build command in `vercel.json`) writes
-[Vercel's Build Output API](https://vercel.com/docs/build-output-api) format to
-`.vercel/output`, using [`scripts/build-vercel-output.ts`](scripts/build-vercel-output.ts):
+The demo runs on GitHub Pages. `.github/workflows/pages.yml` runs `pnpm build:pages` on every
+push to `main` and publishes `apps/root-config/dist`:
 
 - **Static site.** The normal `pnpm build` output: the root page, every micro-frontend under
-  `/apps/<name>/` and the shared React modules under `/shared/`. Unknown paths fall back to
-  `index.html`, so `/assets`, `/maintenance` and `/live-map` work on refresh.
-- **Mock server as one function.** [`server/src/hosted.ts`](server/src/hosted.ts) exports the
-  same Node HTTP server the local mock uses, with the `ws` live feed attached. esbuild bundles
-  it with its dependencies into a single ES module, so nothing is resolved or compiled at
-  runtime. Every `/api/*` request, including the `/api/ws` WebSocket upgrade, goes to it.
-- **Same origin.** The build sets `VITE_FLEET_API_URL` to an empty string, so the apps call
-  `/api/*` on the page's own host and open the live feed at `/api/ws`.
+  `/apps/<name>/` and the shared React modules under `/shared/`, all under the
+  `VITE_FLEET_BASE_PATH` prefix. `404.html` is a copy of `index.html`, so `/assets`,
+  `/maintenance` and `/live-map` work on refresh.
+- **Mock server in the tab.** Pages cannot run a server, so
+  [`server/src/browser.ts`](server/src/browser.ts) answers `/api/*` from a patched `fetch` and
+  the live feed from a patched `WebSocket`. The apps do not know the difference. It uses the
+  same routes, validation and store as the Node server, so behaviour cannot drift between them.
 
-Hosting limits that matter for the demo: data lives in memory per function instance, so it
-resets when an instance is recycled and two instances can briefly disagree; a WebSocket closes
-when the function reaches its maximum duration, and the client reconnects with backoff.
+Every visitor gets their own copy of the data, and reloading the page resets it.
 
 A real deployment would replace the mock with an actual API and set `VITE_FLEET_API_URL` to it.
+`pnpm build:vercel` still produces a Vercel build with the mock as a function.
 
 ## Limitations
 
-- State lives in memory on the mock server and resets when it restarts. There is no
+- State lives in memory on the mock server and resets when it restarts or, on the hosted
+  demo, when the page reloads. There is no
   authentication or authorization.
 - Only React, ReactDOM and sonner are shared. TanStack Query, Radix and Zod are bundled into
   each app, so each bundle is 80 to 115 kB gzipped.

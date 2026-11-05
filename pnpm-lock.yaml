@@ -197,6 +197,9 @@ importers:
 
   apps/root-config:
     dependencies:
+      '@fleet/mock-server':
+        specifier: workspace:^
+        version: link:../../server
       '@fleet/ui':
         specifier: workspace:^
         version: link:../../packages/ui

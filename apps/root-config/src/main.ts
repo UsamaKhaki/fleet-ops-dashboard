@@ -11,7 +11,15 @@ import {
   triggerAppChange,
   type LifeCycles,
 } from 'single-spa';
+import { BASE_PATH, routeUrl } from '../../../tooling/base-path';
 import { MICRO_FRONTENDS, ROUTES } from '../../../tooling/micro-frontends';
+
+// The GitHub Pages build has no server, so the mock runs in this tab. It has to be in place
+// before any micro-frontend loads and makes its first request.
+if (import.meta.env.VITE_FLEET_BROWSER_MOCK === 'true') {
+  const { installBrowserMock } = await import('@fleet/mock-server/browser');
+  installBrowserMock();
+}
 
 const failedLoads = new Map<string, number>();
 
@@ -41,7 +49,7 @@ for (const route of ROUTES) {
   registerApplication({
     name: route.app,
     app: () => loadMicroFrontend(route.app),
-    activeWhen: route.path,
+    activeWhen: routeUrl(route.path),
   });
 }
 
@@ -95,8 +103,8 @@ addErrorHandler((error) => {
 window.addEventListener('single-spa:before-routing-event', renderRouteStatus);
 window.addEventListener('single-spa:routing-event', renderRouteStatus);
 
-if (window.location.pathname === '/') {
-  window.history.replaceState(null, '', ROUTES[0].path);
+if (['/', `${BASE_PATH}/`, BASE_PATH].includes(window.location.pathname)) {
+  window.history.replaceState(null, '', routeUrl(ROUTES[0].path));
 }
 
 start({ urlRerouteOnly: true });
