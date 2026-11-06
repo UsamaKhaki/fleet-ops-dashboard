@@ -51,5 +51,7 @@ export default defineConfig({
   plugins: [importMap(), tailwindcss()],
   server: { port: ROOT_CONFIG_PORT, strictPort: true },
   preview: { port: ROOT_CONFIG_PORT, strictPort: true },
-  build: { target: 'es2022', sourcemap: true },
+  // Not 'assets': that folder would shadow the /assets route on static hosts, which redirect
+  // a folder name to its trailing-slash URL.
+  build: { target: 'es2022', sourcemap: true, assetsDir: 'static' },
 });
